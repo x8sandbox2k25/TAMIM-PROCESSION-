@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABID AL HASAN TAMIM - Portfolio & Feed</title>
+    <!-- Three.js for 3D Background Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-red: #d32f2f;
+            --primary-red-hover: #b71c1c;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --accent-black: #1a1a1a;
+            --text-main: #2b2b2b;
+            --text-muted: #6c757d;
+            --border-color: #e9ecef;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --header-bg: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --primary-red: #ff334b;
+            --primary-red-hover: #ff001e;
+            --bg-color: #0d0d0d;
+            --card-bg: #141414;
+            --accent-black: #000000;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --border-color: #262626;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --header-bg: #141414;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 'Hind Siliguri', sans-serif;
+            scroll-behavior: smooth;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 3D Canvas Background */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Top Bar Navigation */
+        .top-navbar {
+            background-color: var(--header-bg);
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px var(--shadow-color);
+            border-bottom: 3px solid var(--primary-red);
+        }
+
+        .logo-text {
+            font-weight: 900;
+            font-size: 1.3rem;
+            color: var(--primary-red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--primary-red);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-red);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-toggle-btn {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-main);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+            transform: rotate(15deg);
+        }
+
+        .admin-btn {
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.2);
+        }
+
+        .admin-btn:hover {
+            background: var(--primary-red-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Header Section */
+        .hero-section {
+            background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, var(--bg-color) 100%);
+            padding: 60px 10%;
+            text-align: center;
+        }
+
+        .hero-workspace-img {
+            max-width: 100%;
+            width: 850px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px var(--shadow-color);
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.4s ease;
+        }
+
+        .hero-workspace-img:hover {
+            transform: scale(1.01);
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .hero-title span {
+            color: var(--primary-red);
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 15px;
+            height: 30px;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: var(--primary-red);
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: var(--card-bg);
+            color: var(--primary-red);
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        /* Section Headings Style */
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin: 50px 0 30px 0;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        .section-title {
+            background-color: var(--primary-red);
+            color: white;
+            padding: 10px 25px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            border-radius: 4px 4px 0 0;
+            display: inline-block;
+        }
+
+        .section-subtitle {
+            margin-left: 15px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding-bottom: 60px;
+        }
+
+        /* Reveal Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* About Section */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+
+        .profile-img-box {
+            position: relative;
+            text-align: center;
+        }
+
+        .profile-img {
+            width: 100%;
+            max-width: 280px;
+            border-radius: 12px;
+            border: 3px solid var(--primary-red);
+            box-shadow: 0 10px 25px rgba(211, 47, 47, 0.2);
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.03);
+        }
+
+        .about-text p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .personal-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-red);
+        }
+
+        .detail-item {
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .detail-item strong {
+            color: var(--primary-red);
+        }
+
+        /* POSTS & UPDATES FEED SECTION */
+        .posts-feed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        .post-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px var(--shadow-color);
+        }
+
+        .post-header-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .post-author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-red);
+            object-fit: cover;
+        }
+
+        .post-author-name {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .post-time {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .post-text-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-main);
+            margin-bottom: 22px;
+            white-space: pre-line;
+            word-break: break-word;
+        }
+
+        .post-text-content.truncated {
+            max-height: 150px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .post-text-content.truncated::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(transparent, var(--card-bg));
+        }
+
+        .read-more-btn {
+            background: none;
+            border: none;
+            color: var(--primary-red);
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .read-more-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* 1080x1920 (9:16 Aspect Ratio) Images Grid */
+        .post-images-grid {
+            display: grid;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .post-images-grid.single {
+            grid-template-columns: 1fr;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .post-images-grid.double {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .post-img-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16; /* Fixed 1080x1920 portrait ratio */
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        .post-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+            cursor: pointer;
+        }
+
+        .post-img-wrapper img:hover {
+            transform: scale(1.03);
+        }
+
+        .delete-post-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: rgba(211, 47, 47, 0.85);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            opacity: 0.8;
+        }
+
+        .delete-post-btn:hover {
+            opacity: 1;
+            background: var(--primary-red);
+            transform: scale(1.1);
+        }
+
+        /* Advanced Media Upload Area in Admin Panel */
+        .media-upload-zone {
+            margin-top: 10px;
+            padding: 22px;
+            border: 2px dashed var(--primary-red);
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--bg-color), var(--card-bg));
+            text-align: center;
+            cursor: pointer;
+            transition: all .25s ease;
+        }
+        .media-upload-zone:hover, .media-upload-zone.dragover {
+            border-color: var(--primary-red-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px var(--shadow-color);
+        }
+        .media-upload-zone i { font-size: 2rem; color: var(--primary-red); margin-bottom: 8px; }
+        .media-upload-zone strong { display:block; font-size:1rem; color:var(--text-main); }
+        .media-upload-zone small { color:var(--text-muted); display:block; margin-top:5px; }
+        .image-preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .preview-box {
+            position: relative;
+            aspect-ratio: 9 / 16;
+            min-height: 170px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            box-shadow: 0 5px 18px var(--shadow-color);
+        }
+        .preview-box img, .preview-box video {
+            width: 100%; height: 100%; object-fit: cover; display:block;
+        }
+        .preview-type {
+            position:absolute; left:7px; bottom:7px; z-index:2;
+            background:rgba(0,0,0,.72); color:#fff; padding:4px 8px;
+            border-radius:12px; font-size:.7rem; font-weight:700;
+        }
+        .preview-box .remove-img-btn {
+            position: absolute; top: 7px; right: 7px; z-index:3;
+            background: rgba(0,0,0,0.75); color: white; border: none;
+            border-radius: 50%; width: 28px; height: 28px; cursor: pointer;
+            font-size: .8rem; display:flex; align-items:center; justify-content:center;
+        }
+        .media-progress { height:4px; background:var(--border-color); border-radius:4px; overflow:hidden; margin-top:10px; display:none; }
+        .media-progress span { display:block; height:100%; width:0; background:var(--primary-red); transition:width .2s; }
+
+        .post-video-wrapper { position:relative; width:100%; aspect-ratio:9/16; border-radius:12px; overflow:hidden; background:#000; border:1px solid var(--border-color); box-shadow:0 4px 15px var(--shadow-color); }
+        .post-video-wrapper video { width:100%; height:100%; object-fit:cover; display:block; }
+        .post-media-count { color:var(--text-muted); font-size:.8rem; margin-top:10px; }
+
+        /* Experience Section */
+        .timeline-box {
+            position: relative;
+            padding-left: 20px;
+            border-left: 3px solid var(--primary-red);
+        }
+
+        .experience-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 20px var(--shadow-color);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .experience-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px var(--shadow-color);
+            border-color: var(--primary-red);
+        }
+
+        .experience-card::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 28px;
+            width: 14px;
+            height: 14px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            border: 3px solid var(--card-bg);
+        }
+
+        .exp-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .exp-company {
+            color: var(--primary-red);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .exp-duration {
+            display: inline-block;
+            background: var(--bg-color);
+            color: var(--text-main);
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+
+        .exp-list {
+            list-style: none;
+        }
+
+        .exp-list li {
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 22px;
+            line-height: 1.6;
+        }
+
+        .exp-list li::before {
+            content: '➤';
+            position: absolute;
+            left: 0;
+            color: var(--primary-red);
+            font-size: 0.8rem;
+        }
+
+        /* Skills Progress Bars */
+        .skills-container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+
+        .skill-bar {
+            margin-bottom: 22px;
+        }
+
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .progress-line {
+            height: 10px;
+            background: var(--bg-color);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-line span {
+            height: 100%;
+            background: var(--primary-red);
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+            width: 0;
+            transition: width 1.5s ease-in-out;
+        }
+
+        /* Service Cards */
+        .services-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .service-btn {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 20px 25px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        .service-btn i {
+            color: var(--primary-red);
+            font-size: 1.5rem;
+        }
+
+        .service-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-red);
+            box-shadow: 0 8px 20px var(--shadow-color);
+        }
+
+        /* Contact Section */
+        .contact-box {
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 8px rgba(211, 47, 47, 0.2);
+        }
+
+        textarea.form-control {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .send-btn {
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            border-radius: 6px;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+        }
+
+        .send-btn:hover {
+            background: var(--primary-red-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Footer Section */
+        footer {
+            background: var(--card-bg);
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .social-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .social-icon:hover {
+            background: var(--primary-red);
+            color: white;
+            border-color: var(--primary-red);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Admin Modal Panel */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-box {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 550px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 40px var(--shadow-color);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--primary-red);
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .active-panel {
+            display: block;
+        }
+
+        .admin-input-group {
+            margin-bottom: 15px;
+        }
+
+        .admin-input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .admin-input-group input, .admin-input-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .admin-tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 6px 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .admin-tab-btn.active {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .save-btn {
+            background: var(--primary-red);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .save-btn:hover {
+            background: var(--primary-red-hover);
+        }
+
+        /* Lightbox Overlay for Image View */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .lightbox-img {
+            max-height: 90vh;
+            max-width: 90vw;
+            aspect-ratio: 9 / 16;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .personal-details-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+            }
+            .post-images-grid.double {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Canvas Background -->
+    <div id="canvas-container"></div>
+
+    <!-- Top Navbar -->
+    <nav class="top-navbar">
+        <div class="logo-text" id="display-header-logo">ABID AL HASAN TAMIM</div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#posts">Updates</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <button class="admin-btn" onclick="openAdminModal()"><i class="fa-solid fa-lock"></i> Admin</button>
+        </div>
+    </nav>
+
+    <!-- Main Workspace Hero Banner -->
+    <section class="hero-section">
+        <img src="https://i.postimg.cc/bwx01fqj/FB-IMG-17857661467452453.jpg" id="display-hero-banner" class="hero-workspace-img" alt="Workspace Showcase" onerror="this.src='https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1000&auto=format&fit=crop'">
+        <h1 class="hero-title">HI, I'M <span id="display-name-hero">ABID AL HASAN TAMIM</span></h1>
+        <div class="hero-subtitle">
+            <span id="display-role">Professional Loom Operator</span><span class="typing-cursor"></span>
+        </div>
+        <div class="hero-tag">&lt;/ 5 Years Experience in Textile Industry /&gt;</div>
+    </section>
+
+    <div class="container">
+
+        <!-- ABOUT ME SECTION -->
+        <div class="section-header reveal" id="about">
+            <div class="section-title">ABOUT ME</div>
+            <div class="section-subtitle">PERSONAL INFO & PROFILE</div>
+        </div>
+
+        <div class="about-grid reveal">
+            <div class="profile-img-box">
+                <img src="https://i.postimg.cc/rmN4BVRk/FB-IMG-17855230091475102.jpg" id="display-profile-pic" class="profile-img" alt="Abid Al Hasan Tamim Profile">
+            </div>
+            <div class="about-text">
+                <p id="display-bio">To secure a challenging position in the Textile Manufacturing industry where I can utilize my 5 years of experience as a Loom Operator. Dedicated to improving production efficiency, maintaining high-quality weaving standards, and ensuring a safe working environment through honesty, sincerity, and hard work.</p>
+
+                <div class="personal-details-grid">
+                    <div class="detail-item"><strong>নাম:</strong> <span id="display-name-bangla">আবিদ আল হাসান তামিম</span></div>
+                    <div class="detail-item"><strong>বয়স:</strong> <span id="display-age">২১</span> বছর</div>
+                    <div class="detail-item"><strong>পিতা:</strong> <span id="display-father">হাফিজুর রহমান</span></div>
+                    <div class="detail-item"><strong>মাতা:</strong> <span id="display-mother">মমতাজ বেগম</span></div>
+                    <div class="detail-item"><strong>ধর্ম:</strong> <span id="display-religion">ইসলাম</span></div>
+                    <div class="detail-item"><strong>রক্তের গ্রুপ:</strong> <span id="display-blood">A+</span></div>
+                    <div class="detail-item"><strong>ফোন:</strong> <span id="display-phone">+880 1978014102</span></div>
+                    <div class="detail-item"><strong>ইমেইল:</strong> <span id="display-email">abidalhasantamim404@gmail.com</span></div>
+                    <div class="detail-item" style="grid-column: span 2;"><strong>ঠিকানা:</strong> <span id="display-address">BKSP, Jirani, Ashulia, Saver, Dhaka-1700 (স্থায়ী: রুনিগাঁও, গৌরদ্বার, নকলা, শেরপুর)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- POSTS & WORK UPDATES SECTION -->
+        <div class="section-header reveal" id="posts">
+            <div class="section-title">POSTS & WORK UPDATES</div>
+            <div class="section-subtitle">LATEST PHOTOS & STATUSES</div>
+        </div>
+
+        <div class="posts-feed-container" id="postsFeed">
+            <!-- Dynamic Posts will be rendered here by JS -->
+        </div>
+
+        <!-- PROFESSIONAL EXPERIENCE SECTION -->
+        <div class="section-header reveal" id="experience">
+            <div class="section-title">PROFESSIONAL EXPERIENCE</div>
+            <div class="section-subtitle">5 YEARS TOTAL WORK HISTORY</div>
+        </div>
+
+        <div class="timeline-box">
+            <!-- Job 1 -->
+            <div class="experience-card reveal">
+                <div class="exp-title">Loom Operator</div>
+                <div class="exp-company">Mithila Group Of Industries (Gawsia, Narayanganj)</div>
+                <div class="exp-duration">Duration: 1 Year</div>
+                <ul class="exp-list">
+                    <li>Managed and operated Section-Weaving machinery for consistent fabric production.</li>
+                    <li>Ensured daily production targets were met while maintaining quality parameters.</li>
+                    <li>Performed routine machine maintenance and resolved minor mechanical stoppages promptly.</li>
+                    <li>Monitored fabric quality and reported defects to the shift supervisor immediately.</li>
+                </ul>
+            </div>
+
+            <!-- Job 2 -->
+            <div class="experience-card reveal">
+                <div class="exp-title">Loom Operator</div>
+                <div class="exp-company">Momtex Expo Ltd. (Pakiza Group) (Panchdona, Narshingdi)</div>
+                <div class="exp-duration">Duration: 2 Years</div>
+                <ul class="exp-list">
+                    <li>Handled Section-Weaving operations in a high-volume production environment.</li>
+                    <li>Responsible for checking warp tension, weft breaks, and fabric density.</li>
+                    <li>Ensured proper material handling and minimized fabric wastage.</li>
+                    <li>Maintained daily production logbooks and shift handover reports.</li>
+                </ul>
+            </div>
+
+            <!-- Job 3 -->
+            <div class="experience-card reveal">
+                <div class="exp-title">Loom Operator</div>
+                <div class="exp-company">Nannu Spinning Mills Ltd (Gawsia, Narayanganj)</div>
+                <div class="exp-duration">Duration: 2 Years</div>
+                <ul class="exp-list">
+                    <li>Operated looms to produce high-quality textile fabrics.</li>
+                    <li>Conducted quality inspections at regular intervals to identify and fix defects.</li>
+                    <li>Collaborated with the maintenance team to ensure zero downtime during shifts.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MY SERVICES & SKILLS SECTION -->
+        <div class="section-header reveal" id="skills">
+            <div class="section-title">MY SERVICES & SKILLS</div>
+            <div class="section-subtitle">WHAT I CAN DO</div>
+        </div>
+
+        <div class="services-list reveal">
+            <div class="service-btn"><i class="fa-solid fa-industry"></i> Section Weaving & Loom Operation</div>
+            <div class="service-btn"><i class="fa-solid fa-microscope"></i> Fabric Quality Inspection & Defect Control</div>
+            <div class="service-btn"><i class="fa-solid fa-gears"></i> Routine Machine Maintenance & Troubleshooting</div>
+        </div>
+
+        <div class="skills-container reveal" id="skills-section">
+            <div class="skill-bar">
+                <div class="skill-info"><span>Loom Operation & Weaving</span><span>95%</span></div>
+                <div class="progress-line"><span data-width="95%"></span></div>
+            </div>
+            <div class="skill-bar">
+                <div class="skill-info"><span>Machine Maintenance</span><span>88%</span></div>
+                <div class="progress-line"><span data-width="88%"></span></div>
+            </div>
+            <div class="skill-bar">
+                <div class="skill-info"><span>Fabric Quality Control</span><span>90%</span></div>
+                <div class="progress-line"><span data-width="90%"></span></div>
+            </div>
+            <div class="skill-bar">
+                <div class="skill-info"><span>Production Target Management</span><span>92%</span></div>
+                <div class="progress-line"><span data-width="92%"></span></div>
+            </div>
+        </div>
+
+        <!-- EDUCATION SECTION -->
+        <div class="section-header reveal">
+            <div class="section-title">EDUCATIONAL QUALIFICATION</div>
+            <div class="section-subtitle">ACADEMIC BACKGROUND</div>
+        </div>
+
+        <div class="experience-card reveal">
+            <div class="exp-title">Secondary School Certificate (S.S.C)</div>
+            <div class="exp-company">Nakla Pilot Model High School</div>
+            <div class="exp-duration">Passing Year: 2019 | Group: Humanities</div>
+            <p style="color: var(--text-muted);">Result: 2nd Division | Board: Dhaka</p>
+        </div>
+
+        <!-- CONTACT ME SECTION -->
+        <div class="section-header reveal" id="contact">
+            <div class="section-title">CONTACT ME</div>
+            <div class="section-subtitle">GET IN TOUCH</div>
+        </div>
+
+        <div class="contact-box reveal">
+            <form onsubmit="event.preventDefault(); alert('ধন্যবাদ! আপনার বার্তাটি পাঠানো হয়েছে।');">
+                <div class="form-group">
+                    <label>Name: *</label>
+                    <input type="text" class="form-control" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email: *</label>
+                    <input type="email" class="form-control" placeholder="Your Email ID" required>
+                </div>
+                <div class="form-group">
+                    <label>Subject:</label>
+                    <input type="text" class="form-control" placeholder="Subject">
+                </div>
+                <div class="form-group">
+                    <label>Message: *</label>
+                    <textarea class="form-control" placeholder="Leave Your Message.." required></textarea>
+                </div>
+                <button type="submit" class="send-btn">SEND MESSAGE</button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="social-icons">
+            <a href="https://www.facebook.com/abidalhasantamim.org" id="display-facebook" target="_blank" class="social-icon"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="mailto:abidalhasantamim404@gmail.com" id="display-email-icon" class="social-icon"><i class="fa-solid fa-envelope"></i></a>
+            <a href="tel:01978014102" id="display-phone-icon" class="social-icon"><i class="fa-solid fa-phone"></i></a>
+        </div>
+        <div class="copyright">
+            Copyright © 2026 All Rights Reserved / Designed for <strong style="color: var(--primary-red);" id="display-footer-name">Abid Al Hasan Tamim</strong>
+        </div>
+    </footer>
+
+    <!-- LIGHTBOX OVERLAY FOR IMAGE POPUP -->
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img src="" id="lightboxImg" class="lightbox-img" alt="Enlarged Image">
+    </div>
+
+    <!-- ADMIN MODAL POPUP -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <span class="close-modal" onclick="closeAdminModal()">&times;</span>
+            
+            <!-- Login Panel -->
+            <div id="loginPanel" class="admin-section active-panel">
+                <h2 style="color: var(--primary-red); margin-bottom: 15px; text-align: center;"><i class="fa-solid fa-user-shield"></i> Admin Login</h2>
+                <div class="admin-input-group">
+                    <label>Enter Password:</label>
+                    <input type="password" id="adminPasswordInput" placeholder="Password দিন">
+                </div>
+                <button class="save-btn" onclick="checkAdminLogin()">Login</button>
+            </div>
+
+            <!-- Customization & Post Admin Panel -->
+            <div id="customPanel" class="admin-section">
+                <div class="admin-tabs">
+                    <button class="admin-tab-btn active" onclick="switchAdminSubTab('postTab')"><i class="fa-solid fa-pen-to-square"></i> Create Post</button>
+                    <button class="admin-tab-btn" onclick="switchAdminSubTab('profileTab')"><i class="fa-solid fa-sliders"></i> Edit Profile</button>
+                </div>
+
+                <!-- SUB TAB 1: CREATE POST -->
+                <div id="postTab" class="sub-tab-content">
+                    <h3 style="color: var(--primary-red); margin-bottom: 15px;"><i class="fa-solid fa-plus-circle"></i> Create New Update / Post</h3>
+                    <div class="admin-input-group">
+                        <label>Status Text (যতো বড় ইচ্ছা স্ট্যাটাস লিখুন):</label>
+                        <textarea id="newPostText" class="form-control" style="height: 120px;" placeholder="আজকে টেক্সটাইল মিলে নতুন প্রোডাকশন শিফট এর অভিজ্ঞতা..."></textarea>
+                    </div>
+                    
+                    <div class="admin-input-group">
+                        <label>Upload Photos / Videos:</label>
+                        <div class="media-upload-zone" id="mediaUploadZone" onclick="document.getElementById('postFileInput').click()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <strong>ছবি বা ভিডিও নির্বাচন করুন</strong>
+                            <small>একসাথে একাধিক ছবি/ভিডিও • কোনো নির্দিষ্ট MB limit নেই</small>
+                            <input type="file" id="postFileInput" accept="image/*,video/*" multiple hidden onchange="handleImageSelection(event)">
+                        </div>
+                        <div class="media-progress" id="mediaProgress"><span></span></div>
+                    </div>
+
+                    <!-- Advanced Media Preview -->
+                    <div class="image-preview-container" id="previewContainer"></div>
+                    <div class="post-media-count" id="mediaCount"></div>
+
+                    <button class="save-btn" id="publishPostBtn" onclick="publishPost()"><i class="fa-solid fa-paper-plane"></i> Publish Post</button>
+                </div>
+
+                <!-- SUB TAB 2: PROFILE EDIT -->
+                <div id="profileTab" class="sub-tab-content" style="display: none;">
+                    <h3 style="color: var(--primary-red); margin-bottom: 15px;"><i class="fa-solid fa-user-gear"></i> Profile Info</h3>
+                    <div class="admin-input-group">
+                        <label>Profile Image URL (প্রফাইল পিকচারের লিংক):</label>
+                        <input type="text" id="inputProfilePic">
+                    </div>
+                    <div class="admin-input-group">
+                        <label>Hero Workspace Image URL (উপরের ব্যানার পিকচার):</label>
+                        <input type="text" id="inputHeroImg">
+                    </div>
+                    <div class="admin-input-group">
+                        <label>Full Name (English):</label>
+                        <input type="text" id="inputName">
+                    </div>
+                    <div class="admin-input-group">
+                        <label>Name (Bangla):</label>
+                        <input type="text" id="inputNameBangla">
+                    </div>
+                    <div class="admin-input-group">
+                        <label>Phone Number:</label>
+                        <input type="text" id="inputPhone">
+                    </div>
+                    <div class="admin-input-group">
+                        <label>Email Address:</label>
+                        <input type="text" id="inputEmail">
+                    </div>
+                    <div class="admin-input-group">
+                        <label>Facebook Profile Link:</label>
+                        <input type="text" id="inputFacebook">
+                    </div>
+                    <div class="admin-input-group">
+                        <label>Bio / Career Objective:</label>
+                        <textarea id="inputBio" class="form-control" style="height: 80px;"></textarea>
+                    </div>
+
+                    <button class="save-btn" onclick="saveCustomizations()"><i class="fa-solid fa-floppy-disk"></i> Save Profile Changes</button>
+                    <button class="save-btn" style="background: var(--text-muted); margin-top: 8px;" onclick="resetToDefaults()">Reset Defaults</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Features & Interactive Customization -->
+    <script>
+        // Default Sample Posts
+        const defaultPosts = [
+            {
+                id: 'post_1',
+                text: `মিথিলা গ্রুপ অব ইন্ডাস্ট্রিজে টেক্সটাইল ওয়েভিং প্রোডাকশন চলাকালীন আজকের শিফট আপডেট। নতুন সেকশন-ওয়েভিং মেশিনে উচ্চ মানমাত্রার কাপড়ের গুণগত মান বজায় রেখে কাজ সম্পন্ন করা হয়েছে।`,
+                images: [
+                    'https://i.postimg.cc/bwx01fqj/FB-IMG-17857661467452453.jpg',
+                    'https://i.postimg.cc/rmN4BVRk/FB-IMG-17855230091475102.jpg'
+                ],
+                date: '১৮ আগস্ট, ২০২৬'
+            }
+        ];
+
+        let loadedPosts = [];
+        let selectedBase64Images = [];
+        let isAdminLoggedIn = false;
+
+        // --- 1. Theme Toggle Functionality ---
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = themeToggleBtn.querySelector('i');
+        
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let newTheme = theme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            updateParticleColors(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fa-solid fa-sun';
+            } else {
+                themeIcon.className = 'fa-solid fa-moon';
+            }
+        }
+
+        // --- 2. Dynamic Typing Text Animation ---
+        const roles = ["Professional Loom Operator", "Textile Machine Specialist", "Quality Inspection Expert"];
+        let roleIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const roleElement = document.getElementById('display-role');
+
+        function typeEffect() {
+            const currentRole = roles[roleIndex];
+            if (isDeleting) {
+                roleElement.textContent = currentRole.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                roleElement.textContent = currentRole.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 40 : 80;
+
+            if (!isDeleting && charIndex === currentRole.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                roleIndex = (roleIndex + 1) % roles.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(typeEffect, typeSpeed);
+        }
+        typeEffect();
+
+        // --- 3. Interactive Three.js 3D Background Animation ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        let particleColor = currentTheme === 'dark' ? 0xff334b : 0xd32f2f;
+        const geometry = new THREE.IcosahedronGeometry(1, 1);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: particleColor, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.18
+        });
+
+        const particles = [];
+        for (let i = 0; i < 30; i++) {
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.x = (Math.random() - 0.5) * 20;
+            mesh.position.y = (Math.random() - 0.5) * 20;
+            mesh.position.z = (Math.random() - 0.5) * 20;
+            mesh.rotation.x = Math.random() * Math.PI;
+            mesh.rotation.y = Math.random() * Math.PI;
+            scene.add(mesh);
+            particles.push(mesh);
+        }
+
+        camera.position.z = 8;
+
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+            mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+        });
+
+        function updateParticleColors(theme) {
+            const color = theme === 'dark' ? 0xff334b : 0xd32f2f;
+            material.color.setHex(color);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particles.forEach((p, index) => {
+                p.rotation.x += 0.002 + index * 0.0001;
+                p.rotation.y += 0.003 + index * 0.0001;
+            });
+
+            camera.position.x += (mouseX - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- 4. Scroll Reveal & Skill Progress Animations ---
+        const observerOptions = { threshold: 0.15 };
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    if (entry.target.id === 'skills-section') {
+                        const progressLines = entry.target.querySelectorAll('.progress-line span');
+                        progressLines.forEach(line => {
+                            line.style.width = line.getAttribute('data-width');
+                        });
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // --- 5. Posts & Media Feed Management ---
+        async function loadPosts() {
+            try {
+                let dbPosts = await getAllPostsFromDB();
+                if (!dbPosts.length) {
+                    // Migrate old localStorage posts once, then use IndexedDB from now on.
+                    const oldPosts = JSON.parse(localStorage.getItem('tamim_posts_data') || 'null');
+                    const seedPosts = oldPosts || defaultPosts;
+                    for (const post of seedPosts) {
+                        const legacyMedia = (post.images || []).map(src => ({ type: 'image', src }));
+                        await savePostToDB({ ...post, media: post.media || legacyMedia, images: [] });
+                    }
+                    dbPosts = await getAllPostsFromDB();
+                }
+                const sorted = dbPosts.sort((a, b) => String(b.id).localeCompare(String(a.id)));
+                loadedPosts = await normalizePostMedia(sorted);
+                renderPostsFeed();
+            } catch (error) {
+                console.error('Post database error:', error);
+                loadedPosts = defaultPosts;
+                renderPostsFeed();
+            }
+        }
+
+        function renderPostsFeed() {
+            const container = document.getElementById('postsFeed');
+            container.innerHTML = '';
+
+            if (loadedPosts.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;">এখনো কোনো নতুন পোস্ট যোগ করা হয়নি।</div>`;
+                return;
+            }
+
+            const authorName = document.getElementById('display-header-logo').innerText || "Abid Al Hasan Tamim";
+            const profilePic = document.getElementById('display-profile-pic').src;
+
+            loadedPosts.forEach(post => {
+                const postCard = document.createElement('div');
+                postCard.className = 'post-card reveal active';
+
+                const isLongText = post.text.length > 280;
+                const truncatedText = isLongText ? post.text.substring(0, 280) + '...' : post.text;
+
+                let imagesHTML = '';
+                const mediaItems = post.media || (post.images || []).map(src => ({ type: 'image', src }));
+                if (mediaItems.length > 0) {
+                    const gridClass = mediaItems.length === 1 ? 'single' : 'double';
+                    imagesHTML = `<div class="post-images-grid ${gridClass}">`;
+                    mediaItems.forEach((media, mediaIndex) => {
+                        const mediaSrc = media.src || media.url || '';
+                        if (media.type === 'video') {
+                            imagesHTML += `<div class="post-video-wrapper"><video src="${mediaSrc}" controls playsinline preload="metadata"></video></div>`;
+                        } else {
+                            imagesHTML += `<div class="post-img-wrapper"><img src="${mediaSrc}" onclick="openLightbox('${mediaSrc}')" alt="Post Photo"></div>`;
+                        }
+                    });
+                    imagesHTML += `</div>`;
+                }
+
+                let deleteBtn = isAdminLoggedIn ? `<button class="delete-post-btn" onclick="deletePost('${post.id}')" title="Delete Post"><i class="fa-solid fa-trash"></i></button>` : '';
+
+                postCard.innerHTML = `
+                    ${deleteBtn}
+                    <div class="post-header-info">
+                        <img src="${profilePic}" class="post-author-avatar" alt="Avatar">
+                        <div>
+                            <div class="post-author-name">${authorName}</div>
+                            <div class="post-time"><i class="fa-regular fa-clock"></i> ${post.date}</div>
+                        </div>
+                    </div>
+
+                    <div class="post-text-content ${isLongText ? 'truncated' : ''}" id="text-${post.id}">${post.text}</div>
+                    ${isLongText ? `<button class="read-more-btn" onclick="toggleReadMore('${post.id}', this)"><i class="fa-solid fa-chevron-down"></i> আরো পড়ুন</button>` : ''}
+
+                    ${imagesHTML}
+                `;
+
+                container.appendChild(postCard);
+            });
+        }
+
+        function toggleReadMore(postId, btn) {
+            const textElement = document.getElementById(`text-${postId}`);
+            if (textElement.classList.contains('truncated')) {
+                textElement.classList.remove('truncated');
+                btn.innerHTML = `<i class="fa-solid fa-chevron-up"></i> সংক্ষেপ করুন`;
+            } else {
+                textElement.classList.add('truncated');
+                btn.innerHTML = `<i class="fa-solid fa-chevron-down"></i> আরো পড়ুন`;
+            }
+        }
+
+        // Advanced media selection: supports unlimited multi-select image/video files.
+        let selectedMediaFiles = [];
+
+        function handleImageSelection(event) {
+            const files = Array.from(event.target.files || []);
+            addMediaFiles(files);
+            event.target.value = '';
+        }
+
+        function addMediaFiles(files) {
+            if (!files.length) return;
+            files.forEach(file => {
+                if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) return;
+                selectedMediaFiles.push(file);
+            });
+            renderMediaPreviews();
+        }
+
+        function renderMediaPreviews() {
+            const previewContainer = document.getElementById('previewContainer');
+            const mediaCount = document.getElementById('mediaCount');
+            previewContainer.innerHTML = '';
+            selectedMediaFiles.forEach((file, idx) => {
+                const previewBox = document.createElement('div');
+                previewBox.className = 'preview-box';
+                const objectUrl = URL.createObjectURL(file);
+                const isVideo = file.type.startsWith('video/');
+                previewBox.innerHTML = isVideo
+                    ? `<video src="${objectUrl}" muted playsinline preload="metadata"></video><span class="preview-type"><i class="fa-solid fa-video"></i> VIDEO</span>`
+                    : `<img src="${objectUrl}" alt="Preview"><span class="preview-type"><i class="fa-solid fa-image"></i> IMAGE</span>`;
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-img-btn';
+                removeBtn.type = 'button';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.title = 'Remove';
+                removeBtn.onclick = () => removePreviewImage(idx);
+                previewBox.appendChild(removeBtn);
+                previewContainer.appendChild(previewBox);
+            });
+            mediaCount.textContent = selectedMediaFiles.length
+                ? `${selectedMediaFiles.length}টি মিডিয়া নির্বাচিত • মূল ফাইল রাখা হবে, কোনো নির্দিষ্ট MB limit নেই`
+                : '';
+        }
+
+        function removePreviewImage(index) {
+            selectedMediaFiles.splice(index, 1);
+            renderMediaPreviews();
+        }
+
+        // IndexedDB avoids localStorage's small quota and stores original image/video Blobs.
+        const POSTS_DB_NAME = 'tamim_portfolio_media_db';
+        const POSTS_DB_VERSION = 1;
+        const POSTS_STORE = 'posts';
+
+        function openPostsDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(POSTS_DB_NAME, POSTS_DB_VERSION);
+                request.onupgradeneeded = () => {
+                    const db = request.result;
+                    if (!db.objectStoreNames.contains(POSTS_STORE)) db.createObjectStore(POSTS_STORE, { keyPath: 'id' });
+                };
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function savePostToDB(post) {
+            const db = await openPostsDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(POSTS_STORE, 'readwrite');
+                tx.objectStore(POSTS_STORE).put(post);
+                tx.oncomplete = () => { db.close(); resolve(); };
+                tx.onerror = () => { db.close(); reject(tx.error); };
+            });
+        }
+
+        async function getAllPostsFromDB() {
+            const db = await openPostsDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(POSTS_STORE, 'readonly');
+                const req = tx.objectStore(POSTS_STORE).getAll();
+                req.onsuccess = () => { db.close(); resolve(req.result || []); };
+                req.onerror = () => { db.close(); reject(req.error); };
+            });
+        }
+
+        async function deletePostFromDB(postId) {
+            const db = await openPostsDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(POSTS_STORE, 'readwrite');
+                tx.objectStore(POSTS_STORE).delete(postId);
+                tx.oncomplete = () => { db.close(); resolve(); };
+                tx.onerror = () => { db.close(); reject(tx.error); };
+            });
+        }
+
+        async function clearPostsDB() {
+            const db = await openPostsDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(POSTS_STORE, 'readwrite');
+                tx.objectStore(POSTS_STORE).clear();
+                tx.oncomplete = () => { db.close(); resolve(); };
+                tx.onerror = () => { db.close(); reject(tx.error); };
+            });
+        }
+
+        async function normalizePostMedia(posts) {
+            return posts.map(post => {
+                const media = post.media || (post.images || []).map(src => ({ type: 'image', src }));
+                const renderedMedia = media.map(item => {
+                    if (item.blob instanceof Blob) return { ...item, src: URL.createObjectURL(item.blob) };
+                    return item;
+                });
+                return { ...post, media: renderedMedia };
+            });
+        }
+
+        async function publishPost() {
+            const postText = document.getElementById('newPostText').value.trim();
+            if (!postText && selectedMediaFiles.length === 0) {
+                alert('অনুগ্রহ করে কিছু টেক্সট লিখুন অথবা ছবি/ভিডিও নির্বাচন করুন!');
+                return;
+            }
+
+            const publishBtn = document.getElementById('publishPostBtn');
+            const progress = document.getElementById('mediaProgress');
+            const progressBar = progress.querySelector('span');
+            publishBtn.disabled = true;
+            progress.style.display = 'block';
+            progressBar.style.width = '20%';
+
+            try {
+                const media = selectedMediaFiles.map(file => ({
+                    type: file.type.startsWith('video/') ? 'video' : 'image',
+                    name: file.name,
+                    mime: file.type,
+                    size: file.size,
+                    blob: file
+                }));
+
+                const newPost = {
+                    id: 'post_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+                    text: postText,
+                    media,
+                    images: [],
+                    date: new Date().toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' })
+                };
+
+                progressBar.style.width = '70%';
+                await savePostToDB(newPost);
+                progressBar.style.width = '100%';
+
+                document.getElementById('newPostText').value = '';
+                selectedMediaFiles = [];
+                renderMediaPreviews();
+                progress.style.display = 'none';
+                progressBar.style.width = '0';
+
+                await loadPosts();
+                alert('আপনার নতুন পোস্টটি সফলভাবে পাবলিশ হয়েছে!');
+                closeAdminModal();
+            } catch (error) {
+                console.error(error);
+                progress.style.display = 'none';
+                progressBar.style.width = '0';
+                alert('পোস্ট সেভ করা যায়নি। ব্রাউজারের storage permission/quota পরীক্ষা করুন।');
+            } finally {
+                publishBtn.disabled = false;
+            }
+        }
+
+        async function deletePost(postId) {
+            if (confirm('আপনি কি এই পোস্টটি মুছে ফেলতে চান?')) {
+                try {
+                    await deletePostFromDB(postId);
+                    loadedPosts = loadedPosts.filter(p => p.id !== postId);
+                    renderPostsFeed();
+                } catch (error) {
+                    console.error(error);
+                    alert('পোস্টটি মুছে ফেলা যায়নি।');
+                }
+            }
+        }
+
+        // --- Lightbox Popup ---
+        function openLightbox(imgSrc) {
+            document.getElementById('lightboxImg').src = imgSrc;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        // --- 6. Admin Panel Navigation & Controls ---
+        const ADMIN_PASS = "tamim38xyz";
+
+        function switchAdminSubTab(tabId) {
+            document.querySelectorAll('.sub-tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+
+        function loadSettings() {
+            const savedData = JSON.parse(localStorage.getItem('tamim_portfolio_data')) || {};
+            
+            if (savedData.profilePic) document.getElementById('display-profile-pic').src = savedData.profilePic;
+            if (savedData.heroImg) document.getElementById('display-hero-banner').src = savedData.heroImg;
+            if (savedData.name) {
+                document.getElementById('display-header-logo').innerText = savedData.name;
+                document.getElementById('display-name-hero').innerText = savedData.name;
+                document.getElementById('display-footer-name').innerText = savedData.name;
+            }
+            if (savedData.nameBangla) document.getElementById('display-name-bangla').innerText = savedData.nameBangla;
+            if (savedData.phone) {
+                document.getElementById('display-phone').innerText = savedData.phone;
+                document.getElementById('display-phone-icon').href = "tel:" + savedData.phone;
+            }
+            if (savedData.email) {
+                document.getElementById('display-email').innerText = savedData.email;
+                document.getElementById('display-email-icon').href = "mailto:" + savedData.email;
+            }
+            if (savedData.facebook) document.getElementById('display-facebook').href = savedData.facebook;
+            if (savedData.bio) document.getElementById('display-bio').innerText = savedData.bio;
+
+            loadPosts();
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminModal').style.display = 'flex';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
+
+        function checkAdminLogin() {
+            const inputPass = document.getElementById('adminPasswordInput').value;
+            if (inputPass === ADMIN_PASS) {
+                isAdminLoggedIn = true;
+                document.getElementById('loginPanel').classList.remove('active-panel');
+                document.getElementById('customPanel').classList.add('active-panel');
+
+                document.getElementById('inputProfilePic').value = document.getElementById('display-profile-pic').src;
+                document.getElementById('inputHeroImg').value = document.getElementById('display-hero-banner').src;
+                document.getElementById('inputName').value = document.getElementById('display-header-logo').innerText;
+                document.getElementById('inputNameBangla').value = document.getElementById('display-name-bangla').innerText;
+                document.getElementById('inputPhone').value = document.getElementById('display-phone').innerText;
+                document.getElementById('inputEmail').value = document.getElementById('display-email').innerText;
+                document.getElementById('inputFacebook').value = document.getElementById('display-facebook').href;
+                document.getElementById('inputBio').value = document.getElementById('display-bio').innerText;
+
+                renderPostsFeed(); // Re-render to show delete buttons for admin
+            } else {
+                alert('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।');
+            }
+        }
+
+        function saveCustomizations() {
+            const data = {
+                profilePic: document.getElementById('inputProfilePic').value,
+                heroImg: document.getElementById('inputHeroImg').value,
+                name: document.getElementById('inputName').value,
+                nameBangla: document.getElementById('inputNameBangla').value,
+                phone: document.getElementById('inputPhone').value,
+                email: document.getElementById('inputEmail').value,
+                facebook: document.getElementById('inputFacebook').value,
+                bio: document.getElementById('inputBio').value
+            };
+
+            localStorage.setItem('tamim_portfolio_data', JSON.stringify(data));
+            loadSettings();
+            alert('আপনার পরিবর্তনসমূহ সফলভাবে সেভ করা হয়েছে!');
+            closeAdminModal();
+        }
+
+        function resetToDefaults() {
+            if (confirm('আপনি কি সব পরিবর্তন ও পোস্ট মুছে আগের ডিফল্ট তথ্যে ফিরে যেতে চান?')) {
+                localStorage.removeItem('tamim_portfolio_data');
+                localStorage.removeItem('tamim_posts_data');
+                clearPostsDB().finally(() => location.reload());
+            }
+        }
+
+        // Drag & drop media upload
+        const mediaUploadZone = document.getElementById('mediaUploadZone');
+        if (mediaUploadZone) {
+            ['dragenter', 'dragover'].forEach(evt => mediaUploadZone.addEventListener(evt, e => {
+                e.preventDefault(); e.stopPropagation(); mediaUploadZone.classList.add('dragover');
+            }));
+            ['dragleave', 'drop'].forEach(evt => mediaUploadZone.addEventListener(evt, e => {
+                e.preventDefault(); e.stopPropagation(); mediaUploadZone.classList.remove('dragover');
+            }));
+            mediaUploadZone.addEventListener('drop', e => addMediaFiles(Array.from(e.dataTransfer.files || [])));
+        }
+
+        // Initialize Settings on Load
+        window.onload = loadSettings;
+    </script>
+</body>
+</html>
